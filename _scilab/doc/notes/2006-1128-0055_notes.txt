@@ -1,0 +1,6 @@
+SETTING AN ELEMENT OF A VECTOR TO [] *TRUNCATES* THAT VECTOR
+
+(abs) fft()'s y-values are the computed TOTAL energy of wave cycling x times in dataset. I.E. amplitude * size(dataset) / 2.
+* It would be a good idea to NORMALIZE fft()'s output with something like this:
+	fftdata = abs(fft(wavdata));
+	normedfft = fftdata * 2 / sampling_rate;

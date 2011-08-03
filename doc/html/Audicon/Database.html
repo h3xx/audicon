@@ -1,0 +1,355 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Audicon::Database - Maintain a database of extracted audio feature data</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@midas64.(none)" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#subroutines">SUBROUTINES</a></li>
+	<li><a href="#new">new</a></li>
+	<ul>
+
+		<li><a href="#add_feature">add_feature</a></li>
+		<li><a href="#begin_work__rollback__commit">begin_work, rollback, commit</a></li>
+		<li><a href="#audio_id">audio_id</a></li>
+		<li><a href="#genre_id">genre_id</a></li>
+		<li><a href="#genre_names">genre_names</a></li>
+		<li><a href="#genre_representation">genre_representation</a></li>
+		<li><a href="#feature_id">feature_id</a></li>
+		<li><a href="#init_db">init_db</a></li>
+		<li><a href="#clear_db">clear_db</a></li>
+		<li><a href="#weed">weed</a></li>
+		<li><a href="#total_genres">total_genres</a></li>
+		<li><a href="#featureset_size">featureset_size</a></li>
+		<li><a href="#mark_random_test_data">mark_random_test_data</a></li>
+		<li><a href="#test_data_ratio">test_data_ratio</a></li>
+		<li><a href="#genre_buff">genre_buff</a></li>
+		<li><a href="#feature_buff">feature_buff</a></li>
+		<li><a href="#pull_data">pull_data</a></li>
+		<li><a href="#save_training_data__save_training_data_random">save_training_data, save_training_data_random</a></li>
+	</ul>
+
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Audicon::Database - Maintain a database of extracted audio feature data</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>This extends the functionality of <a href="#audicon">Audicon</a> by maintaining an SQLite database backend to store the extracted audio feature data as well as miscellaneous other information pertaining to setup.</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>FIXME</p>
+<p>
+</p>
+<hr />
+<h1><a name="subroutines">SUBROUTINES</a></h1>
+<p>
+</p>
+<hr />
+<h1><a name="new">new</a></h1>
+<p>Initializes the object.</p>
+<pre>
+        # (defaults are shown here)</pre>
+<pre>
+        # this specifies the mode that transactions are handled when updating
+        # the database in any way
+        # 0 =&gt; transactions are not automatically used (autocommit)
+        # 1 =&gt; use a transaction for every file being added (default)
+        # 2 =&gt; use a transaction for every set of files
+        my $transaction_mode = 1;</pre>
+<pre>
+        # autmatically make sure the tables, views and indices are present upon
+        # initialization?
+        my $auto_init = 1;</pre>
+<pre>
+        # weed the database of unusable featuresets upon initialization?
+        my $auto_weed = 0;</pre>
+<pre>
+        # the default weeding threshold (see &amp;weed)
+        my $weed_threshold = 100;</pre>
+<pre>
+        my $adb = Audicon::Database-&gt;new(
+                'dbfile'        =&gt; '/path/to/my_sqlite_db',
+                'transaction'   =&gt; $transaction_mode,
+                'auto_init'     =&gt; $auto_init,
+                'auto_weed'     =&gt; $auto_weed,
+                'weed_threshold'=&gt; $weed_threshold,
+        );</pre>
+<p>
+</p>
+<h2><a name="add_feature">add_feature</a></h2>
+<p>Takes an <a href="../Audicon/Feature.html">the Audicon::Feature manpage</a> object and iterates through it, adding all of its audio feature data to the database, linking it to the set of genres specified.</p>
+<pre>
+        # instantiate the featureset calculator
+        my $feature = Audicon::Feature-&gt;new(...);</pre>
+<pre>
+        # add everything from it to the database as being of the genre 'rock'
+        $adb-&gt;add_feature($feature, 'rock');</pre>
+<pre>
+        # --OR--</pre>
+<pre>
+        # add it to the database as blues AND rock
+        $adb-&gt;add_feature($feature, [ 'blues', 'rock' ]);</pre>
+<p>
+</p>
+<h2><a name="begin_work__rollback__commit">begin_work, rollback, commit</a></h2>
+<p>Access to transaction control of the database.</p>
+<pre>
+        $adb-&gt;begin_work;</pre>
+<pre>
+        # [change database]</pre>
+<pre>
+        if ($error) {
+                $adb-&gt;rollback;
+        } else {
+                $adb-&gt;commit;
+        }</pre>
+<p>
+</p>
+<h2><a name="audio_id">audio_id</a></h2>
+<p>Retrieves the integer audio identifier from the database. If the file doesn't exist yet in the database, it creates a new entry and returns the identifier for it.</p>
+<pre>
+        my $audio_id = $adb-&gt;audio_id(
+                'name'  =&gt; '/path/to/myaudio.wav',
+                'norm_coeff'    =&gt; $normalization_coefficient,
+                'sampling_rate' =&gt; $audio_sampling_rate,
+        );</pre>
+<p>
+</p>
+<h2><a name="genre_id">genre_id</a></h2>
+<p>Retrieves the integer genre identifier from the database.</p>
+<p>In the event that <code>'insert'</code> is nonzero, and if the genre doesn't exist yet in the database, a new entry will be created for it and the identifier for it will be returned.</p>
+<p>If <code>'insert'</code> is zero (the default) and the genre does not yet exist in the database, a value of <code>-1</code> will be returned.</p>
+<pre>
+        my $genre_id = $adb-&gt;genre_id(
+                'name'  =&gt; 'blues',
+                'insert'=&gt; 0,   # don't insert anything if we don't find it
+        );</pre>
+<p>
+</p>
+<h2><a name="genre_names">genre_names</a></h2>
+<p>Returns an array of the genre names defined in the database. The indices this array will be the same as they occur in both the database and in the training data.</p>
+<pre>
+        my $genre_names = $adb-&gt;genre_names;</pre>
+<p>
+</p>
+<h2><a name="genre_representation">genre_representation</a></h2>
+<p>Returns a hash of genre names, with the values being how many featuresets currently in the database represent each genre.</p>
+<pre>
+        my $genre_rep = $adb-&gt;genre_representation;</pre>
+<pre>
+        my $rock_rep = $genre_rep-&gt;{'rock'}; # etc.</pre>
+<p>
+</p>
+<h2><a name="feature_id">feature_id</a></h2>
+<p>Returns the next <code>feature_id</code> from the database that would be the identifier of the next featureset inserted into the database.</p>
+<pre>
+        my $next_feature_id = $adb-&gt;feature_id;</pre>
+<p>
+</p>
+<h2><a name="init_db">init_db</a></h2>
+<p>Sets up the initial tables, views and indices in the database if they don't exist. It's generally a good idea to run this function if the file is just being created.</p>
+<p>It also serves to clear the database and set up new, empty tables if it is called with a non-zero argument.</p>
+<p>If the <code>'auto_init'</code> parameter was set in <a href="#new">new</a>, this function is automatically run without any arguments upon instantiation.</p>
+<pre>
+        # don't clear anything
+        $adb-&gt;init_db;
+        # or
+        $adb-&gt;init_db(0);</pre>
+<pre>
+        # clear the entire database (!!!)
+        $adb-&gt;init_db(1);</pre>
+<p>
+</p>
+<h2><a name="clear_db">clear_db</a></h2>
+<p>Clears the entire database. Don't ever do this unless you really, REALLY want to.</p>
+<pre>
+        $adb-&gt;clear_db;</pre>
+<p>
+</p>
+<h2><a name="weed">weed</a></h2>
+<p>Weeds out feature data that was derived from audio data that contained only null, or mostly null samples. It does this by finding entries where the number of zero-axis crossings is less than the given value and marking them as &quot;disabled&quot; inside the database. This will prevent these featuresets, as well as their adjacent featuresets, from being returned when either <a href="#pull_data">pull_data</a>, <a href="#save_training_data">save_training_data</a> or <a href="#save_training_data_random">save_training_data_random</a> is called.</p>
+<p>The default zero-crossing threshold value is 100, or whatever was passed in for the <code>'weed_threshold'</code> parameter upon instantiation.</p>
+<pre>
+        # weed-out only empty audio
+        $adb-&gt;weed(0);</pre>
+<pre>
+        # just use the default value (100)
+        $adb-&gt;weed;</pre>
+<p>
+</p>
+<h2><a name="total_genres">total_genres</a></h2>
+<p>Returns the total number of genres represented in the database. Effective way of determining the size of the output layer of Audicon's neural network (see <a href="../Audicon/NeuralNet.html">the Audicon::NeuralNet manpage</a>).</p>
+<pre>
+        my $num_genres = $adb-&gt;total_genres;</pre>
+<p>
+</p>
+<h2><a name="featureset_size">featureset_size</a></h2>
+<p>Returns the size of a featureset. This is an effective way of determining the size of the input layer of Audicon's neural network (see <a href="../Audicon/NeuralNet.html">the Audicon::NeuralNet manpage</a>).</p>
+<pre>
+        my $num_features = $adb-&gt;featureset_size;</pre>
+<p>
+</p>
+<h2><a name="mark_random_test_data">mark_random_test_data</a></h2>
+<p>Marks random featureset data in the database to be used as test data. This data will only be pulled if either one of the data-pulling functions is called with the argument <code>'is_test' =&gt; 1</code>.</p>
+<pre>
+        # (defaults are shown here)
+        # 5% to be marked as training data
+        my $test_data_portion = 0.05;</pre>
+<pre>
+        # reset all previously-marked training data?
+        my $only = 1;</pre>
+<pre>
+        $adb-&gt;mark_random_test_data(
+                'ratio' =&gt; $test_data_portion,
+                'only'  =&gt; $only,
+        );</pre>
+<p>See <a href="#test_data_ratio">test_data_ratio</a> for determining if this needs to be done.</p>
+<p>
+</p>
+<h2><a name="test_data_ratio">test_data_ratio</a></h2>
+<p>Returns what the ratio of <strong>training</strong> data out of the <strong>total</strong> data not marked as <code>disabled</code> is. Useful for determining whether to run <a href="#mark_random_test_data">mark_random_test_data</a>.</p>
+<pre>
+        my $test_ratio = $adb-&gt;test_data_ratio;</pre>
+<p>
+</p>
+<h2><a name="genre_buff">genre_buff</a></h2>
+<p>Fetches a buffer of genre data associated with a given <code>audio_id</code>. Returns a reference to an array of ones and zeroes. In the case of an <code>audio_id</code> that represents more than one genre, this array will have values such that their sum will equal <code>1</code>.</p>
+<pre>
+        my $file_genres = $adb-&gt;genre_buff($my_audio_id);</pre>
+<pre>
+        my $whether_genre0 = $file_genres-&gt;[0];</pre>
+<p>See <a href="#genre_names">genre_names</a> for how to interpret this list.</p>
+<p>
+</p>
+<h2><a name="feature_buff">feature_buff</a></h2>
+<p>Returns a buffer of joined 'previous', 'current' and 'next' featuresets for a <code>feature_id</code>.</p>
+<pre>
+        my $featureset = $adb-&gt;feature_buff($my_feature_id);</pre>
+<p>
+</p>
+<h2><a name="pull_data">pull_data</a></h2>
+<p>Retrieves all the feature data in the database, leaving out any sequencing data.</p>
+<p>The data returned will be in the following format:</p>
+<pre>
+        [
+                {
+                        'in'    =&gt; [ $feature1, $feature2, ... ],
+                        'out'   =&gt; [ $whether_genre1, $whether_genre2, ... ],*
+                },
+                {'in' =&gt; ..., 'out' =&gt; ...}, ...
+        ]</pre>
+<p>* The length of the output vector will be equal to the number of genres currently defined in the database. A <strong>1</strong> in, say, column 1 will denote that the featureset defined at the <strong>'in'</strong> index is marked as being an example of genre #1, whatever that might have been defined as.</p>
+<pre>
+        # retrieve ALL the featuresets from the database
+        my $ins_and_outs = $adb-&gt;pull_data;</pre>
+<pre>
+        # or, only retrieve 10 (default is no limit)
+        my $ins_and_outs = $adb-&gt;pull_data(
+                'limit' =&gt; 10,
+        );</pre>
+<p>Alternately, one may retrieve the data as a set of data compatible with <a href="../AI/FANN.html">the AI::FANN manpage</a>'s training data formats, which would look something like this:</p>
+<pre>
+        [
+                [ [ $in1, $in2, ... ], [ $out1, $out2, ... ] ],
+                [ [ ... ], [ ... ] ],
+                ...
+        ]</pre>
+<p>To retrieve the data in this format, one would use the following syntax:</p>
+<pre>
+        my $data = $adb-&gt;pull_data(
+                'as_array'      =&gt; 1,
+        );</pre>
+<p>It might even be easier to instantiate the <a href="../AI/FANN/TrainData.html">the AI::FANN::TrainData manpage</a> object with the data from this method:</p>
+<pre>
+        my $tdata = AI::FANN::TrainData-&gt;new(
+                $adb-&gt;pull_data(
+                        'as_array'      =&gt; 1,
+                )
+        );</pre>
+<p>
+</p>
+<h2><a name="save_training_data__save_training_data_random">save_training_data, save_training_data_random</a></h2>
+<p>Saves collections of training data buffers to files in the internal format readable by <a href="../AI/FANN.html">the AI::FANN manpage</a>. <code>save_training_data_random</code> saves the data in a random order, so that it will be less likely to cause inconsistencies in training a neural network.</p>
+<p>This segmentary handling of training data is to overcome memory limitations involved in the processing of large amounts of data.</p>
+<pre>
+        # where to save the training data; each separate file will have a
+        # numeric index affixed to the end of the basename (for example
+        # &quot;$basename.0&quot;, &quot;$basename.1&quot;, etc.) If this isn't specified, a
+        # temporary directory will be used
+        my $basename = &quot;/path/to/training_data&quot;;</pre>
+<pre>
+        # how many records to save in each file
+        my $size = 10_000; # the default; uses about 275 megs of memory</pre>
+<pre>
+        # whether to pull TEST data (nonzero) or TRAINING data (zero)
+        my $is_test = 0;</pre>
+<pre>
+        # whether to normalize the columns
+        my $normalize = 1;</pre>
+<pre>
+        my @training_data_files = $adb-&gt;save_training_data(
+                'normalize'     =&gt; $normalize,
+                'basename'      =&gt; $basename,
+                'size'          =&gt; $size,
+                'is_test'       =&gt; $is_test,
+        );</pre>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>This module can be used directly, but is meant for use in <a href="#audicon">Audicon</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Dan Church &lt;<a&nbsp;href="mailto:amphetamachine@gmail.com">amphetamachine@gmail.com</a>&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<dl>
+<dt><strong><a name="audicon" class="item"><a href="#audicon">Audicon</a></a></strong></dt>
+
+<dt><strong><a name="audicon_feature" class="item"><a href="../Audicon/Feature.html">the Audicon::Feature manpage</a></a></strong></dt>
+
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2008 Dan Church.</p>
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+<p>The full text of the license can be found in the LICENSE file included with this module.</p>
+
+</body>
+
+</html>

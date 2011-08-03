@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Audicon - FIXME</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@midas64.(none)" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#subroutines">SUBROUTINES</a></li>
+	<ul>
+
+		<li><a href="#new">new</a></li>
+		<li><a href="#connect_database">connect_database</a></li>
+		<li><a href="#connect_network">connect_network</a></li>
+		<li><a href="#add_files">add_files</a></li>
+		<li><a href="#run_audio">run_audio</a></li>
+		<li><a href="#train_network">train_network</a></li>
+		<li><a href="#select_test_data">select_test_data</a></li>
+		<li><a href="#test_network">test_network</a></li>
+		<li><a href="#run_featureset">run_featureset</a></li>
+	</ul>
+
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Audicon - FIXME</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>FIXME</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>FIXME</p>
+<p>
+</p>
+<hr />
+<h1><a name="subroutines">SUBROUTINES</a></h1>
+<p>
+</p>
+<h2><a name="new">new</a></h2>
+<p>Returns a blessed Audicon object. All arguments are optional and the defaults are shown.</p>
+<pre>
+        my %options = (
+                'display_progress' =&gt; 1, # display wget-style progress bars?
+        );
+        my $audicon = Audicon-&gt;new(%options);</pre>
+<p>See <a href="./Audicon/Database.html">the Audicon::Database manpage</a>, <a href="./Audicon/Feature.html">the Audicon::Feature manpage</a> and <a href="./Audicon/File.html">the Audicon::File manpage</a> for accepted constructor arguments.</p>
+<p>
+</p>
+<h2><a name="connect_database">connect_database</a></h2>
+<p>Connects to an SQLite database file for storing audio feature data.</p>
+<pre>
+        $aud-&gt;connect_database('/path/to/mydatabase.db');</pre>
+<p>
+</p>
+<h2><a name="connect_network">connect_network</a></h2>
+<p>FIXME</p>
+<p>
+</p>
+<h2><a name="add_files">add_files</a></h2>
+<p>Adds new audio files to the Audicon database, associating them with each of the given genres.</p>
+<pre>
+        $audicon-&gt;add_files(
+                'genres' =&gt; [ 'blues', 'rock' ],
+                'files' =&gt; [ '/path/to/audio1.wav', '/path/to/audio2.wav' ],
+        );</pre>
+<p>
+</p>
+<h2><a name="run_audio">run_audio</a></h2>
+<p>Runs WAV files through the network and returns the results in the form of hashed genre probabilities.</p>
+<pre>
+        my $genre_probabilities = $aud-&gt;run_audio('/path/to/myfile.wav');</pre>
+<p>
+</p>
+<h2><a name="train_network">train_network</a></h2>
+<p>Pulls the training data out of the database and trains the neural network.</p>
+<p>FIXME</p>
+<p>
+</p>
+<h2><a name="select_test_data">select_test_data</a></h2>
+<p>FIXME</p>
+<p>
+</p>
+<h2><a name="test_network">test_network</a></h2>
+<p>Pulls the test data out of the database and runs it through the neural network.</p>
+<p>FIXME</p>
+<p>
+</p>
+<h2><a name="run_featureset">run_featureset</a></h2>
+<p>Runs a featureset through the database and returns a hash of likelihoods.</p>
+<pre>
+        my $likelihoods = $aud-&gt;run_featureset([
+                [ INPUT VECTOR 0 ],
+                [ INPUT VECTOR 1 ],
+        ]);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Dan Church &lt;<a&nbsp;href="mailto:amphetamachine@gmail.com">amphetamachine@gmail.com</a>&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<dl>
+<dt><strong><a name="audicon_database" class="item"><a href="./Audicon/Database.html">the Audicon::Database manpage</a></a></strong></dt>
+
+<dt><strong><a name="audicon_feature" class="item"><a href="./Audicon/Feature.html">the Audicon::Feature manpage</a></a></strong></dt>
+
+<dt><strong><a name="audicon_file" class="item"><a href="./Audicon/File.html">the Audicon::File manpage</a></a></strong></dt>
+
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2008 Dan Church.</p>
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+<p>The full text of the license can be found in the LICENSE file included with this module.</p>
+
+</body>
+
+</html>

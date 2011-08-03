@@ -1,0 +1,159 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Audicon::Feature::SpectralFlux - calculates the spectral flux between two given subsequent sets of FFT bins.</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@midas64.(none)" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#export">EXPORT</a></li>
+	<li><a href="#subroutines">SUBROUTINES</a></li>
+	<ul>
+
+		<li><a href="#spectral_flux">spectral_flux</a></li>
+	</ul>
+
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Audicon::Feature::SpectralFlux - calculates the spectral flux between two given subsequent sets of FFT bins.</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Finds the rates of total amplitude change between two consecutive audio clips.</p>
+<p>Spectral flux is defined as the squared difference between the unweighted amplitudes of successive spectral distributions. It is characterized by the following function:</p>
+<pre>
+    F
+   ---
+   \
+    \  (N(t)[f] - N(t-1)[f])^2
+    /
+   /
+   ---
+    f
+  
+where B&lt;F&gt; is the highest frequency bin, B&lt;N(t)[f]&gt; and B&lt;N(t-1)[f]&gt; are the unweighted amplitude of the Fourier transform bin representing frequency B&lt;f&gt; at the current frame B&lt;t&gt;, and previous frame # B&lt;t-1&gt;, respectively.</pre>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+        use Audicon::Tools      qw/ fft_unweighted /;
+        use Audicon::Feature::SpectralFlux      qw/ spectral_flux /;</pre>
+<pre>
+        # people don't usually type their own audio data,
+        # but this is just an example
+        my @audio_samples = (....);
+        my @prev_samples = (....);</pre>
+<pre>
+        # 44.1 kHz (standard CD audio)
+        my $sampling_rate = 44_100;</pre>
+<pre>
+        # get the unweighted Fourier transform bins
+        # (returns array ref: [real, imaginary])
+        my $curr_amps = &amp;fft_unweighted(\@audio_samples, $sampling_rate);
+        my $prev_amps = &amp;fft_unweighted(\@prev_samples, $sampling_rate);</pre>
+<pre>
+        # calculate the spectral flux based on only the REAL number portion of
+        # the Fourier transform
+        my $flux_real = &amp;spectral_flux(
+                'amps'  =&gt; $curr_amps-&gt;[0],
+                'amps_p'=&gt; $prev_amps-&gt;[0],
+        );</pre>
+<pre>
+        # -- OR --</pre>
+<pre>
+        # calculate the spectral flux based on both the REAL and the IMAGINARY
+        # number portions of the Fourier transform
+        my ($flux_real, $flux_imag) = &amp;spectral_flux(
+                'amps'  =&gt; $curr_amps,
+                'amps_p'=&gt; $prev_amps,
+        );</pre>
+<p>
+</p>
+<hr />
+<h1><a name="export">EXPORT</a></h1>
+<p>Exports the function <a href="#spectral_flux">spectral_flux</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="subroutines">SUBROUTINES</a></h1>
+<p>
+</p>
+<h2><a name="spectral_flux">spectral_flux</a></h2>
+<p>Returns the spectral flux of a set of sequential audio samples' unweighted FFT bins.</p>
+<pre>
+        my $flux_real = &amp;spectral_flux(
+                'amps'  =&gt; $curr_amps-&gt;[0],
+                'amps_p'=&gt; $prev_amps-&gt;[0],
+        );</pre>
+<pre>
+        my $flux_imag = &amp;spectral_flux(
+                'amps'  =&gt; $curr_amps-&gt;[1],
+                'amps_p'=&gt; $prev_amps-&gt;[1],
+        );</pre>
+<pre>
+        # -- OR --</pre>
+<pre>
+        # both $curr_amps and $prev_amps contains the arrays of both real
+        # (index 0) and imaginary (index 1) Fourier transform bin values</pre>
+<pre>
+        my ($flux_real, $flux_imag) = &amp;spectral_flux(
+                'amps'  =&gt; $curr_amps,
+                'amps_p'=&gt; $prev_amps,
+        );</pre>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>This module can be used directly, but is meant for use in <a href="../../Audicon/Feature.html">the Audicon::Feature manpage</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Dan Church &lt;<a&nbsp;href="mailto:amphetamachine@gmail.com">amphetamachine@gmail.com</a>&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<dl>
+<dt><strong><a name="audicon_feature" class="item"><a href="../../Audicon/Feature.html">the Audicon::Feature manpage</a></a></strong></dt>
+
+<dt><strong><a name="audicon_tools" class="item"><a href="../../Audicon/Tools.html">the Audicon::Tools manpage</a></a></strong></dt>
+
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2008 Dan Church.</p>
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+<p>The full text of the license can be found in the LICENSE file included with this module.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+key_matches			ec	vg	u	s
+key_freqs			ec	vg		s
+keydefs		p	bc	evrc	r		s
+note_span	p	bc	evrc	r		s
+octave_span	p	bc	evrc	r		s
+sampling_rate	p	bc	evrc	r		s
+clip_duration	g	bc	evrc	r		s
+keys_per_octave				g		
+samples_per_clip			g		
+num_freqs				g		
+total_keys				g		
+all_key_defs				g		
+freqs					g		
+s						g	
+c						g	
+bc						g	

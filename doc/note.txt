@@ -1,0 +1,21 @@
+Modularizing functions by naming inputs [done]
+
+'mags'	=> current clip mags
+'amps'	=> "	"	amps
+'t_mags'=> "	tex	mags
+'t_amps'=> "	"	amps
+
+'amps_p'=> prev clip amps
+&c.
+
+'t_amps_p' and so on
+
+'samples' => current clip samples
+'t_samples' ...
+'samples_p'
+&c.
+
+also:
+'sampling_rate' => sampling rate
+
+

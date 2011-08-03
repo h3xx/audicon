@@ -1,0 +1,11 @@
+genre links to files by order of magnitude
+
+samples link to a file
+
+samples link to instruments by order of magnitude
+
+
+* may want to normalize data from magnitude linkages by taking magnitude / sum(magnitudes)
+
+!!! mix wav files to mono
+use dd to extract sample data (second by second)

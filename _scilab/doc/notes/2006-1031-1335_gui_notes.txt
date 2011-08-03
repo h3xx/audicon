@@ -1,0 +1,19 @@
+[hout]=waitbar(x)
+[hout]=waitbar(x,mes)
+[hout]=waitbar(mes)
+	creates a new window with a waitbar in it
+
+waitbar(x,mes,winId)
+waitbar(mes,winId)
+waitbar(x,winId)
+	updates a waitbar's percent
+
+winclose(winId)
+winclose([winId1 winId2])
+	close a window
+
+[h]=figure(x)
+[h]=figure()
+uicontrol - create a Graphic User Interface object
+uicontrol(parent,'PropertyName',PropertyValue,...)
+uicontrol(handle) - change focus to object at handle

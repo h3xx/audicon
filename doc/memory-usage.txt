@@ -1,0 +1,34 @@
+Notes about memory usage:
+
+Since Audicon is meant to process such a vast amount of data, much of which
+needs to exist at the same time in memory, certain techniques were used in
+order to minimize the amount of memory needed to process all the data at once.
+
+It was determined that a relational database would be the most logical way to
+store the audio "feature" and genre data. It does this in such a way that disk
+space is conserved. Although this method of storage adds a marginal overhead
+to the collation of the data, its overall modularity more than makes up for
+it.
+
+In order to overcome the issue of training the neural network with this vast
+amount of data, a system of buffering the data was implemented. This system
+uses Perl's "Storable" library to buffer the data to disk in a format
+re-loadable directly as a Perl data structure. The network training is then
+modularized, with training loaded from each of the buffered files
+individually.
+
+The only issue perceivable with this method of buffering is that training the
+network to recognize only one set of the buffered data at a time may lead to
+it "forgetting" that it was trained to recognize the previous one.
+
+When using the data storage capabilities of Perl's "Storable" library, a few
+questions on memory usage came to mind:
+
+* Storing the data structure as a three-dimensional array uses slightly more
+  memory than storing it as a two-dimensional one. This difference is
+  negligible: after testing, it was determined that only 0.6 kb (719.2 blocks)
+  of memory more, per entry, was needed to store the three-dimensional array.
+
+  This was also reflected in the stored data file: A three-dimensional stored
+  array was shown to take up only 60 bytes more of disk space per entry than a
+  two-dimensional one.

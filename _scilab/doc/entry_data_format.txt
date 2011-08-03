@@ -1,0 +1,11 @@
+entry_data
+	(1)
+		name:	string
+		file:	string
+		data:	[d]
+		samples
+			(1)
+				index:		d
+				instruments:	[string]
+				genres:		[string]
+				emotions:	[string]

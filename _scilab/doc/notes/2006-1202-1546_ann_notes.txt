@@ -1,0 +1,4 @@
+ann_FF_init(N,r,rb)
+	N: [ neurons in layer 1, neurons in layer 2, &c];
+	r: [ min, max ] --- init values (optional -- [-1, 1])
+	

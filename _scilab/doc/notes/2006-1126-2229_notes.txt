@@ -1,0 +1,23 @@
+
+
+    X
+    |
+  | |
+  | |    |
+ ||Y|Z|  |  |
+||||||| || ||
+
+Use that function I that determines change from Y to X & the change from X to Z to average the 'head-and-shoulders' value of the frequency bin.
+
+Remember: /_\ ZX = - /_\ XZ
+	Namely, foreach(deltafromleft(mydata)) { head(binnum) = dfl(binnum) - dfl(binnum + 1) }
+	... all over 2 for averaging and all that cal.
+
+Then, determining the 'head' value for that bin with respect to the two adjacent bins, move on to bins a distance of 2 away, then 3, then 4, ad infin-- within reason.
+
+Within reason meaning, of course, that one should normalize it somehow. Maybe by use of a logarithmic curve. Something like:
+	head(binnum, distance) = avg(twodeltas) / distance
+
+It might be a good (great) idea to normalize the output with respect to cycles per second (instead of cycles per *dataset*, as fft() does it). This would mean writing the function to deal with distance in *Hz*.
+
+Are you understanding ANY of this?

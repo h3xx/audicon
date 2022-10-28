@@ -1,3 +1,0 @@
-instead of trying to group notes into chords, then put the chords to neurons, maybe I could just delineate notes by frequencies, adding a neuron for each (within reason) that way, if a sample were showing a chord, it would be represented as showing those 3 (or 4) frequencies.
-
-I *think* that it would work the same, but I don't know what happens if two chords share a note -- nevermind ... that's stupid.

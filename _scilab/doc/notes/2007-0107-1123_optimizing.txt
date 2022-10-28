@@ -1,2 +1,0 @@
-tic()	starts stopwatch timer (accurate to milliseconds)
-toc()	reads stopwatch timer
